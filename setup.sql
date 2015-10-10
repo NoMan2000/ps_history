@@ -25,7 +25,7 @@ USE ps_history;
 
 DROP PROCEDURE IF EXISTS setup;;
 
-CREATE DEFINER=root@localhost PROCEDURE ps_history.setup()
+CREATE PROCEDURE ps_history.setup()
 MODIFIES SQL DATA
 SQL SECURITY DEFINER
 BEGIN
@@ -79,7 +79,7 @@ END;;
 
 DROP PROCEDURE IF EXISTS truncate_tables;;
 
-CREATE DEFINER=root@localhost PROCEDURE ps_history.truncate_tables()
+CREATE PROCEDURE ps_history.truncate_tables()
 MODIFIES SQL DATA
 SQL SECURITY DEFINER
 BEGIN
@@ -117,7 +117,7 @@ END;;
 
 DROP PROCEDURE IF EXISTS cleanup_history;;
 
-CREATE DEFINER=root@localhost PROCEDURE ps_history.cleanup_history(v_interval VARCHAR(64))
+CREATE PROCEDURE ps_history.cleanup_history(v_interval VARCHAR(64))
 MODIFIES SQL DATA
 SQL SECURITY DEFINER
 BEGIN
@@ -155,7 +155,7 @@ END;;
 
 DROP PROCEDURE IF EXISTS ps_history.auto_cleanup_history;
 
-CREATE DEFINER=root@localhost PROCEDURE ps_history.auto_cleanup_history()
+CREATE PROCEDURE ps_history.auto_cleanup_history()
 MODIFIES SQL DATA
 SQL SECURITY DEFINER
 BEGIN
@@ -173,7 +173,7 @@ END;;
 
 DROP PROCEDURE IF EXISTS ps_history.set_collect_interval;
 
-CREATE DEFINER=root@localhost PROCEDURE ps_history.set_collect_interval(v_interval INT)
+CREATE PROCEDURE ps_history.set_collect_interval(v_interval INT)
 MODIFIES SQL DATA
 SQL SECURITY DEFINER
 BEGIN
@@ -185,7 +185,7 @@ END;;
 
 DROP PROCEDURE IF EXISTS ps_history.set_retention_period;
 
-CREATE DEFINER=root@localhost PROCEDURE ps_history.set_retention_period(v_retention_period VARCHAR(64))
+CREATE PROCEDURE ps_history.set_retention_period(v_retention_period VARCHAR(64))
 MODIFIES SQL DATA
 SQL SECURITY DEFINER
 BEGIN
@@ -198,7 +198,7 @@ END;;
 
 DROP PROCEDURE IF EXISTS collect;;
 
-CREATE DEFINER=root@localhost PROCEDURE ps_history.collect()
+CREATE PROCEDURE ps_history.collect()
 MODIFIES SQL DATA
 SQL SECURITY DEFINER
 BEGIN
@@ -337,7 +337,7 @@ END;;
 
 DROP PROCEDURE IF EXISTS ps_history.collect_at_interval;
 
-CREATE DEFINER=root@localhost PROCEDURE ps_history.collect_at_interval()
+CREATE PROCEDURE ps_history.collect_at_interval()
 MODIFIES SQL DATA
 SQL SECURITY DEFINER
 BEGIN
@@ -368,7 +368,7 @@ END;;
 
 DROP PROCEDURE IF EXISTS ps_history.test_interval;;
 
-CREATE DEFINER=root@localhost PROCEDURE ps_history.test_retention_period(v_interval VARCHAR(64))
+CREATE PROCEDURE ps_history.test_retention_period(v_interval VARCHAR(64))
 MODIFIES SQL DATA
 SQL SECURITY DEFINER
 BEGIN
@@ -387,7 +387,7 @@ END;;
 
 DROP EVENT IF EXISTS ps_history.snapshot_performance_schema;;
 
-CREATE DEFINER=root@localhost EVENT ps_history.snapshot_performance_schema
+CREATE EVENT ps_history.snapshot_performance_schema
 ON SCHEDULE
 EVERY 1 SECOND
 ON COMPLETION PRESERVE
