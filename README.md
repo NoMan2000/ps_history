@@ -10,6 +10,9 @@ If you are running 5.7 you'll automatically get history into the 5.7 tables, suc
 
 Event scheduler
 ======
+
+See:  http://dev.mysql.com/doc/refman/5.6/en/performance-schema.html
+
 You should turn the event scheduler on to collect data.  There is a stored routine called *ps_history.collect()* which snapshots the performance schema table data into the history tables in a transactionally consistent manner.  If you don't want to use the event that comes with ps_history, you can run *ps_history.collect()* manually at any time.
 
 By default data is collected every 30 seconds.  You do not need to modify the event to change the collection interval.  Instead, use the *ps_history.set_collection_interval(<seconds>)* procedure.  For example, to collect data every fifteen seconds:
