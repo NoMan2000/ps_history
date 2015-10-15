@@ -1,22 +1,5 @@
 DELIMITER ;;
-/*  ps_history 
-    Copyright 2015 Justin Swanhart
 
-    ps_history is free software: you can redistribute it and/or modify
-    it under the terms of the Lesser GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    ps_history is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with FlexViews in the file COPYING, and the Lesser extension to
-    the GPL (the LGPL) in COPYING.LESSER.
-    If not, see <http://www.gnu.org/licenses/>.
-*/
 DROP DATABASE IF EXISTS ps_history;
 
 CREATE DATABASE IF NOT EXISTS ps_history;
@@ -24,6 +7,8 @@ CREATE DATABASE IF NOT EXISTS ps_history;
 USE ps_history;
 
 DROP PROCEDURE IF EXISTS setup;;
+
+DELIMITER ;;
 
 CREATE PROCEDURE ps_history.setup()
 MODIFIES SQL DATA
@@ -77,7 +62,11 @@ BEGIN
 
 END;;
 
+DELIMITER ;;
+
 DROP PROCEDURE IF EXISTS truncate_tables;;
+
+DELIMITER ;;
 
 CREATE PROCEDURE ps_history.truncate_tables()
 MODIFIES SQL DATA
@@ -115,7 +104,11 @@ BEGIN
 
 END;;
 
+DELIMITER ;;
+
 DROP PROCEDURE IF EXISTS cleanup_history;;
+
+DELIMITER ;;
 
 CREATE PROCEDURE ps_history.cleanup_history(v_interval VARCHAR(64))
 MODIFIES SQL DATA
@@ -153,7 +146,11 @@ BEGIN
 
 END;;
 
-DROP PROCEDURE IF EXISTS ps_history.auto_cleanup_history;
+DELIMITER ;;
+
+DROP PROCEDURE IF EXISTS ps_history.auto_cleanup_history;;
+
+DELIMITER ;;
 
 CREATE PROCEDURE ps_history.auto_cleanup_history()
 MODIFIES SQL DATA
@@ -171,7 +168,11 @@ BEGIN
 
 END;;
 
-DROP PROCEDURE IF EXISTS ps_history.set_collect_interval;
+DELIMITER ;;
+
+DROP PROCEDURE IF EXISTS ps_history.set_collect_interval;;
+
+DELIMITER ;;
 
 CREATE PROCEDURE ps_history.set_collect_interval(v_interval INT)
 MODIFIES SQL DATA
@@ -183,7 +184,11 @@ BEGIN
     COMMIT;
 END;;
 
-DROP PROCEDURE IF EXISTS ps_history.set_retention_period;
+DELIMITER ;;
+
+DROP PROCEDURE IF EXISTS ps_history.set_retention_period;;
+
+DELIMITER ;;
 
 CREATE PROCEDURE ps_history.set_retention_period(v_retention_period VARCHAR(64))
 MODIFIES SQL DATA
@@ -196,7 +201,11 @@ BEGIN
     COMMIT;
 END;;
 
+DELIMITER ;;
+
 DROP PROCEDURE IF EXISTS collect;;
+
+DELIMITER ;;
 
 CREATE PROCEDURE ps_history.collect()
 MODIFIES SQL DATA
@@ -335,7 +344,12 @@ BEGIN
 
 END;;
 
-DROP PROCEDURE IF EXISTS ps_history.collect_at_interval;
+
+DELIMITER ;;
+
+DROP PROCEDURE IF EXISTS ps_history.collect_at_interval;;
+
+DELIMITER ;;
 
 CREATE PROCEDURE ps_history.collect_at_interval()
 MODIFIES SQL DATA
@@ -366,7 +380,12 @@ BEGIN
 
 END;;
 
+DELIMITER ;;
+
 DROP PROCEDURE IF EXISTS ps_history.test_interval;;
+DROP PROCEDURE IF EXISTS ps_history.test_retention_period;;
+
+DELIMITER ;;
 
 CREATE PROCEDURE ps_history.test_retention_period(v_interval VARCHAR(64))
 MODIFIES SQL DATA
@@ -384,8 +403,11 @@ BEGIN
     DEALLOCATE PREPARE test_stmt;
 END;;
 
+DELIMITER ;;
 
 DROP EVENT IF EXISTS ps_history.snapshot_performance_schema;;
+
+DELIMITER ;;
 
 CREATE EVENT ps_history.snapshot_performance_schema
 ON SCHEDULE
@@ -397,6 +419,8 @@ DO
 CALL ps_history.collect_at_interval()
 ;;
 
+DELIMITER ;;
+
 SELECT 'Creating ps_history tables' as message;;
 call ps_history.setup();;
 
@@ -405,6 +429,9 @@ triggers can't be created in stored routines, so they
 have to be created here.  They aren't vital to behavior so
 it is not so bad if they go missing
 */
+
+DELIMITER ;;
+
 CREATE TRIGGER trg_before_delete before DELETE ON ps_history.psh_settings
 FOR EACH ROW 
 BEGIN  
@@ -412,12 +439,17 @@ BEGIN
     SET MESSAGE_TEXT = 'You may not delete rows in this table';
 END;;
 
+
+DELIMITER ;;
+
 CREATE TRIGGER trg_before_insert before INSERT ON ps_history.psh_settings
 FOR EACH ROW 
 BEGIN  
     SIGNAL SQLSTATE '99999'   
     SET MESSAGE_TEXT = 'You may not insert rows in this table';
 END;;
+
+DELIMITER ;;
 
 CREATE TRIGGER trg_before_update before UPDATE ON ps_history.psh_settings
 FOR EACH ROW 
@@ -434,12 +466,13 @@ BEGIN
 
 END;;
 
+DELIMITER ;;
+
 SELECT 'Installation complete' as message;;
 
 SELECT IF(@@event_scheduler='ON','Data will be collected into history tables every 30 seconds, unless you change the collection interval with CALL ps_history.set_collection_interval(X) where X is a number >= 1 and <= MAXINT ',
                               'You must enable the event scheduler ( SET GLOBAL event_scheduler=1 ) to collect data into the performance_schema, or run the ps_history.collect() procedure manually') 
 as message;;
-
 
 
 DELIMITER ;
